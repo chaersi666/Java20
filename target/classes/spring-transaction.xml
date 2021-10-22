@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--配置事务管理器-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--配置事务的方法-->
+
+            <!--不需要事务的方法，只读事务-->
+            <tx:method name="select*" propagation="SUPPORTS" read-only="true"/>
+            <tx:method name="find*" propagation="SUPPORTS" read-only="true"/>
+            <tx:method name="get*" propagation="SUPPORTS" read-only="true"/>
+
+            <!--需要事务的方法，非只读事务-->
+            <tx:method name="insert*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="update*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="delete*" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="add*" propagation="REQUIRED" read-only="false"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!--配置切面-->
+    <aop:config>
+        <aop:advisor advice-ref="txAdvice" pointcut="execution(* com.turing.service..*(..))"/>
+    </aop:config>
+
+</beans>

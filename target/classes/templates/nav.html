@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common::header('nav')}"></head>
+<body>
+<div id="myAccordion" class="easyui-accordion" data-options="fit:true" style="width:500px;height:300px;">
+    <!--要动态填充-->
+    <script>
+        //请求服务器，获取json
+        $.ajax({
+            url:"menu/",
+            method:"get",
+            dataType:"json",
+            success:function (data) {
+                console.log(data);
+                //遍历data，创建百叶窗
+                $.each(data,function (index,menu) {
+                    //判断是否是一级菜单
+                    if(menu.pid == 0){
+                        //创建百叶窗
+                        $('#myAccordion').accordion('add', {
+                            id:"first"+menu.id,
+                            title: menu.text
+                        });
+                        //根据每个百叶窗菜单的id，动态添加tree【实质就是一个ul列表】
+                        $("#first"+menu.id).html("<ul id='myTree'"+menu.id+"></ul>");
+                        //给每个tree，动态加载数据
+                        $("#first"+menu.id).tree({
+                            data:menu.children,
+                            onClick:function (node) {
+                                //判断哪些菜单是不用点开的
+                                if(node.attributes == null || node.attributes.url == null){
+                                    //属性为空，或者url为空的菜单，都是不需要打开的
+                                    return;//返回
+                                }
+                                //创建面板
+                                if($('#myTabs').tabs('exists',node.text)){
+                                    //面板存在则选中
+                                    $('#myTabs').tabs('select',node.text)
+                                }else {
+                                    //创建TABS
+                                    $("#myTabs").tabs('add',{
+                                        title: node.text,
+                                        href:node.attributes.url,
+                                        closable:true,
+                                        iconCls:node.attributes.icon
+                                    });
+                                }
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    </script>
+</div>
+</body>
+</html>

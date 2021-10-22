@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{common::header('图灵主页')}"></head>
+<body class="easyui-layout">
+<div data-options="region:'north',border:false" style="height:63px;background:#B3DFDA;">
+    <img th:src="@{/logo.png}">
+</div>
+<div data-options="region:'west',title:'West',href:'nav'" style="width:150px;">
+    <!--隐含了nav.html中，body下的所有内容-->
+</div>
+
+<div data-options="region:'east',title:'East'" style="width:180px;">
+    <div id="cc" class="easyui-calendar" style="width:100%;height:180px;"></div>
+</div>
+<div data-options="region:'south',border:false" style="height:60px;background:#A9FACD;padding:10px;">
+    <div style="text-align: center">
+        Copyright All Rights Reserved<br>
+        长沙图灵教育IT学院 版权所有湘ICP备15004237号-4
+    </div>
+</div>
+<div data-options="region:'center',title:'Center'">
+    <div id="myTabs" class="easyui-tabs" fit="true" style="width:700px;height:250px">
+        <!--通过js动态填充-->
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+server:
+  port: 80
+  servlet:
+    encoding:
+      charset: UTF-8
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1/t1
+    username: root
+    password: root
+    #数据库类型为sql
+    platform: mysql
+    #启动时初始化5个连接
+    initialSize: 5
+    #最小空闲连接5个
+    minIdle: 5
+    #最大连接数20
+    maxActive: 20
+    #获取连接等待时间60秒，超出报错
+    maxWait: 60000
+    #每60秒执行一次连接回收器
+    timeBetweenEvictionRunsMillis: 60000
+    #5分钟内没有任何操作的空闲连接会被回收
+    minEvictableIdleTimeMillis: 300000
+    #验证连接有效性的SQL
+    validationQuery: SELECT 1
+    #空闲时校验，建议开启
+    testWhileIdle: true
+    #使用中是否验证有效性，建议关闭
+    testOnBorrow: false
+    #归还连接时验证有效性，建议关闭
+    testOnReturn: false
+    #设置过滤器，stat拥有接收状态，wall用于防止SQL注入，logback表示使用logback日志输出
+    filters: stat,wall,logback
+    #设置日志中是否显示SQL
+    logSlowSql: true
+  thymeleaf:
+    cache: false
+  mvc:
+    format:
+      date: yyyy-mm-dd
+  jackson:
+    date-format: yyyy-mm-dd
+    time-zone: GMT-8
+
+mybatis:
+  type-aliases-package: com.turing.entity
+  mapper-locations: classpath:mapper/*.xml

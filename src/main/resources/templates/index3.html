@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{common::header('EasyUI数据表格')}"></head>
+<body>
+<div id="dlg" class="easyui-dialog" style="width:400px;height:580px;padding:10px 20px"
+     closed="true" buttons="#dlg-buttons">
+    <form id="fm" method="post">
+        <div style="margin-bottom:20px;display: none">
+            <input class="easyui-textbox" name="empno" style="width:100%" data-options="label:'编号:',required:true">
+        </div>
+        <div style="margin-bottom:20px">
+            <input class="easyui-textbox" name="ename" style="width:100%" data-options="label:'姓名:',required:true">
+        </div>
+        <div style="margin-bottom:20px">
+            <input class="easyui-textbox" name="job" style="width:100%" data-options="label:'岗位:',required:true">
+        </div>
+        <div style="margin-bottom:20px">
+            <input class="easyui-textbox" type="number" name="mgr" style="width:100%" data-options="label:'上级领导:',required:true">
+        </div>
+        <div style="margin-bottom:20px">
+            <input class="easyui-datebox" name="hiredate" style="width:100%" data-options="label:'入职日期:',required:true">
+        </div>
+        <div style="margin-bottom:20px">
+            <input class="easyui-textbox" type="number" name="sal" style="width:100%" data-options="label:'工资:',required:true">
+        </div>
+        <div style="margin-bottom:20px">
+            <input class="easyui-textbox" type="number" name="comm" style="width:100%" data-options="label:'奖金:',required:true">
+        </div>
+        <div style="margin-bottom:20px">
+            <input class="easyui-textbox" type="number" name="deptno" style="width:100%" data-options="label:'部门:',required:true">
+        </div>
+    </form>
+</div>
+<div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveUser()">保存</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">关闭</a>
+</div>
+<table id="dg" fit="true"></table>
+<script th:inline="none">
+    $('#dg').datagrid({
+        url:'emp/page',//请求地址
+        pagination:true,//分页工具栏
+        rownumbers:true,//序号
+        pageList:[5,10,20,50],//定义分页工具栏上分页的数
+        pageSize:5,//默认每页显示的条数
+        columns:[[//列属性
+            {field:'empno',title:'编号',width:100},
+            {field:'ename',title:'姓名',width:100},
+            {field:'job',title:'岗位',width:100},
+            {field:'mgr',title:'上级领导',width:100},
+            {field:'hiredate',title:'入职日期',width:100},
+            {field:'sal',title:'工资',width:100},
+            {field:'comm',title:'奖金',width:100},
+            {field:'deptno',title:'部门',width:100}
+        ]],
+        toolbar: [{
+            text:"添加",
+            iconCls: 'icon-add',
+            handler: function(){
+                $('#dlg').dialog('open').dialog('setTitle','添加用户');
+                $('#fm').form('clear');
+                url = 'emp/insert';
+            }
+        },'-',{
+            text:"修改",
+            iconCls: 'icon-edit',
+            handler: function(){
+                var row = $('#dg').datagrid('getSelected');
+                if (row){
+                    $('#dlg').dialog('open').dialog('setTitle','修改用户');
+                    $('#fm').form('load',row);
+                    url = 'emp/update';
+                }
+            }
+        },'-',{
+            text:"删除",
+            iconCls: 'icon-cancel',
+            handler: function(){
+                var row = $('#dg').datagrid('getSelected');
+                if(row){
+                    $.messager.confirm('删除用户','你确定要删除吗',function (r) {
+                        if (r){
+                            url:'emp/delete/'+row.empno,
+                            $.post(url,function (result) {
+                                if (result=="success"){
+                                    $('#dg').datagrid('reload');
+                                    $.messager.show({
+                                        title:'通知',
+                                        msg:'删除成功',
+                                        timeout:3000,
+                                        showType:'slide'
+
+                                    });
+                                }else {
+                                    $.messager.show({
+                                        title:'通知',
+                                        msg:'删除失败！',
+                                        timeout:3000,
+                                        showType:'slide'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        }]
+    });
+
+    // 添加用户
+    function saveUser(){
+        $('#fm').form('submit',{
+            url: url,
+            onSubmit: function(){
+
+            },
+            success: function(result){
+                if(result == "success"){
+                    //添加成功，关闭对话框
+                    $('#dlg').dialog('close');
+                    //消息提示
+                    $.messager.show({
+                        title:'通知',
+                        msg:'添加成功！',
+                        timeout:3000,
+                        showType:'slide'
+                    });
+                    //刷新数据表格
+                    $('#dg').datagrid("reload");
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
